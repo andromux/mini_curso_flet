@@ -1,0 +1,111 @@
+name: "Build Flet Android APK"
+
+on:
+  push:
+    branches: [dev, test, main]
+
+jobs:
+  build:
+    name: Build Flet Android APK
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Set Up Java
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'temurin'
+          java-version: '17'
+
+      - name: Setup Android SDK
+        uses: android-actions/setup-android@v3
+
+      - name: Set Up Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          flutter-version: '3.24.5'
+          channel: 'stable'
+
+      - name: Configure Flutter and Accept Android Licenses
+        run: |
+          flutter config --no-analytics
+          flutter config --no-cli-animations
+          flutter doctor --android-licenses
+
+      - name: Set Up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+          cache: 'pip'
+
+      - name: Install Python Dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+
+      - name: Build Flet APK (Android)
+        run: |
+          flet build apk --project andromuxMenu --build-number ${{ github.run_number }} --build-version 1.0.${{ github.run_number }}
+
+      - name: Compress Flet builds
+        run: |
+          mkdir -p artifacts
+          find build/ -name "*.apk" -exec cp {} artifacts/ \;
+          tar -czf flet_builds.tar.gz -C artifacts .
+
+      - name: Upload Flet APK Artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: Flet-APK
+          path: artifacts/*.apk
+
+      - name: Upload Compressed Build
+        uses: actions/upload-artifact@v4
+        with:
+          name: Flet-Compressed
+          path: flet_builds.tar.gz
+
+      - name: Extract version
+        id: extract_version
+        run: echo "VERSION=1.0.${{ github.run_number }}" >> $GITHUB_ENV
+
+      - name: Check if Tag Exists
+        id: check_tag
+        run: |
+          if git rev-parse "v${{ env.VERSION }}" >/dev/null 2>&1; then
+            echo "TAG_EXISTS=true" >> $GITHUB_ENV
+          else
+            echo "TAG_EXISTS=false" >> $GITHUB_ENV
+          fi
+
+      - name: Modify Tag
+        if: env.TAG_EXISTS == 'true'
+        run: echo "VERSION=1.0.${{ github.run_number }}-build-${{ github.run_number }}" >> $GITHUB_ENV
+
+      - name: Create Release
+        uses: ncipollo/release-action@v1
+        with:
+          artifacts: |
+            artifacts/*.apk
+            flet_builds.tar.gz
+          tag: v${{ env.VERSION }}
+          token: ${{ secrets.GITHUB_TOKEN }}
+          name: "Flet Release v${{ env.VERSION }}"
+          body: |
+            ## 🚀 Flet Release v${{ env.VERSION }}
+
+            ### 📱 Aplicaciones Disponibles
+            - ✅ **Android APK** - Aplicación nativa para Android
+
+            ### 🔧 Información de Build
+            - **Build Number:** ${{ github.run_number }}
+            - **Commit:** ${{ github.sha }}
+            - **Rama:** ${{ github.ref_name }}
+
+            ### 📦 Archivos Incluidos
+            - `*.apk` - Aplicación Android lista para instalar
+            - `flet_builds.tar.gz` - Todos los builds comprimidos
+          draft: false
+          prerelease: false
