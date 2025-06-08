@@ -14,7 +14,7 @@ def home_view(page):
                 padding=30,
                 expand=True,
                 content=ft.Column(
-                    scroll=ft.ScrollMode.ALWAYS,
+                    scroll=ft.ScrollMode.HIDDEN,
                     controls=[
                         ft.Text("📦 Bienvenido a la Introducción de GitHub Actions", size=22, weight=ft.FontWeight.BOLD, text_align=ft.TextAlign.CENTER),
                         ft.Text(
