@@ -4,18 +4,15 @@ from menu import create_social_media_and_options_menu
 def home_view(page):
     return ft.View(
         "/",
-        controls=[
+        [
             ft.AppBar(
                 title=ft.Text("Mini curso Flet + GitHub Actions", color=ft.Colors.WHITE),
                 bgcolor=ft.Colors.BLUE_800,
                 actions=[create_social_media_and_options_menu(page)],
             ),
             ft.Container(
-                padding=30,
-                expand=True,
                 content=ft.Column(
-                    scroll=ft.ScrollMode.HIDDEN,
-                    controls=[
+                    [
                         ft.Text("📦 Bienvenido a la Introducción de GitHub Actions", size=22, weight=ft.FontWeight.BOLD, text_align=ft.TextAlign.CENTER),
                         ft.Text(
                             "GitHub Actions te permite automatizar tareas de desarrollo como testeo, despliegue y CI/CD directamente desde tu repositorio.",
@@ -38,12 +35,14 @@ def home_view(page):
                             icon=ft.Icons.ARROW_FORWARD,
                             on_click=lambda e: page.go("/about"),
                             style=ft.ButtonStyle(bgcolor=ft.Colors.GREEN_700, color=ft.Colors.WHITE)
-                        ),
-                        ft.Container(height=50),  # extra espacio para evitar solape con la barra inferior en móviles
+                        )
                     ],
-                    alignment=ft.MainAxisAlignment.START,
+                    alignment=ft.MainAxisAlignment.CENTER,
                     horizontal_alignment=ft.CrossAxisAlignment.CENTER,
-                )
+                    expand=True,
+                ),
+                padding=30,
+                expand=True,
             )
         ],
         bgcolor=page.bgcolor
