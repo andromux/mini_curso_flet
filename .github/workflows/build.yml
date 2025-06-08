@@ -1,8 +1,7 @@
 name: "Build Flet Android APK"
 
 on:
-  push:
-    branches: [dev, test, main]
+  workflow_dispatch:
 
 jobs:
   build:
