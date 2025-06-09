@@ -5,7 +5,7 @@ def social_button(name: str, url: str, icon_path: str = None, page=None):
     return ft.PopupMenuItem(
         content=ft.Row(
             [
-                ft.Image(src=icon_path, width=24, height=24) if icon_path else ft.Icon(ft.icons.LINK),
+                ft.Image(src=icon_path, width=24, height=24) if icon_path else ft.Icon(ft.Icons.LINK),
                 ft.Text(name),
             ]
         ),
