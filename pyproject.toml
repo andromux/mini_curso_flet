@@ -1,5 +1,5 @@
 [project]
-name = "RutasMenu"
+name = "CoopdX search"
 version = "0.1.0"
 description = ""
 readme = "README.md"
@@ -8,17 +8,18 @@ authors = [
     { name = "Flet developer", email = "you@example.com" }
 ]
 dependencies = [
-  "flet==0.28.3"
+  "flet==0.28.3",
+  "httpx==0.28.1",
 ]
 
 [tool.flet]
 # org name in reverse domain name notation, e.g. "com.mycompany".
 # Combined with project.name to build bundle ID for iOS and Android apps
-org = "com.andromux.rutas"
+org = "com.retired64.coop"
 
 # project display name that is used as an app title on Android and iOS home screens,
 # shown in window titles and about app dialogs on desktop.
-product = "RMenu"
+product = "Retired64 APK Search"
 
 # company name to display in about app dialogs
 company = "Flet"
