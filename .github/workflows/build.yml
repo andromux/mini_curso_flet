@@ -46,7 +46,7 @@ jobs:
 
       - name: Build Flet APK (Android)
         run: |
-          flet build apk --project andromuxMenu --build-number ${{ github.run_number }} --build-version 1.0.${{ github.run_number }}
+          flet build apk --project git-coop --build-number ${{ github.run_number }} --build-version 1.0.${{ github.run_number }} --split-per-abi
 
       - name: Compress Flet builds
         run: |
